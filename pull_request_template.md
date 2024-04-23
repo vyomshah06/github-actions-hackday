@@ -16,3 +16,4 @@ _How will consumers learn about this change?_
 ## Security
 
 - [ ] Logs contain no sensitive information **at any log level**
+- [ ] Secret tokens saved in configuration file
