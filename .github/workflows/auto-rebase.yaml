@@ -24,7 +24,7 @@ jobs:
       - name: Determine affected PRs
         id: determine_prs
         run: |
-          git for-each-ref --format='%(refname:short) %(upstream:short)' refs/remotes/origin/pr/* | \
+          git for-each-ref --format='%(refname:short) %(upstream)' refs/remotes/origin/pr/* | \
             while read pr_branch base_ref; do \
               echo "Checking PR branch: $pr_branch and base ref: $base_ref"; \
               if git merge-base --is-ancestor "$base_ref" "origin/main"; then \
