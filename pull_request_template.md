@@ -14,4 +14,4 @@ _How will we know if this is working as expected when request is merged?_
 ## Security
 
 - [ ] Logs contain no sensitive information **at any log level**
-- [ ] Secret tokens saved in configuration file
+- [ ] Secret tokens are saved in configuration file
