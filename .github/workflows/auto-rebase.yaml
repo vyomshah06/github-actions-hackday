@@ -29,16 +29,10 @@ jobs:
               echo "Checking PR branch: $pr_branch"; \
               if ! git merge-base --is-ancestor origin/main $pr_branch; then \
                 echo "PR branch $pr_branch is out-of-date with main"; \
-                echo "{pr_branches}={$pr_branch}" >> $GITHUB_OUTPUT; \
+                echo "Rebasing $pr_branch onto main"; \
+                git checkout $pr_branch; \
+                git rebase origin/main; \
+                git push --force-with-lease; \
               fi; \
             done
 
-      - name: Rebase affected PRs
-        if: steps.determine_prs.outputs.pr_branches != ''
-        run: |
-          for pr_branch in $(echo "${{ steps.determine_prs.outputs.pr_branches }}"); do \
-            echo "Rebasing $pr_branch onto main"; \
-            git checkout $pr_branch; \
-            git rebase origin/main; \
-            git push --force-with-lease; \
-          done
