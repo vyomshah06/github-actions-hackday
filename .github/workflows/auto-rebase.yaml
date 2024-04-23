@@ -1,8 +1,9 @@
 name: Auto-Rebase Pull Request
 
 on:
-  pull_request:
-    types: [synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
   auto-rebase:
@@ -16,11 +17,28 @@ jobs:
         run: |
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
-      - name: Fetch upstream changes
-        run: git fetch origin
+      
+      - name: Fetch pull request branches
+        run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*
 
-      - name: Rebase PR branch
+       - name: Determine affected PRs
+        id: determine_prs
         run: |
-          git checkout ${{ github.head_ref }}
-          git rebase origin/${{ github.base_ref }}
-          git push --force-with-lease
+          git for-each-ref --format='%(refname:short) %(upstream:short)' refs/remotes/origin/pr/* | \
+            while read pr_branch base_ref; do \
+              echo "Checking PR branch: $pr_branch"; \
+              if git merge-base --is-ancestor "$base_ref" "origin/main"; then \
+                echo "PR branch $pr_branch is out-of-date with main"; \
+                echo "::set-output name=pr_branches::$pr_branch"; \
+              fi; \
+            done
+
+     - name: Rebase affected PRs
+        if: steps.determine_prs.outputs.pr_branches != ''
+        run: |
+          for pr_branch in $(echo "${{ steps.determine_prs.outputs.pr_branches }}"); do \
+            echo "Rebasing $pr_branch onto main"; \
+            git checkout $pr_branch; \
+            git rebase origin/main; \
+            git push --force-with-lease; \
+          done
