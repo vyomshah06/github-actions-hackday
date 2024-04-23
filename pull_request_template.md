@@ -9,7 +9,7 @@ _How will we know if this is working as expected when request is merged?_
 ## Communication
 
 - [ ] Commits explain _why_ the change was made
-- [ ] Updated docs (README, CHANGELOG, docs/, etc)
+- [ ] Updated docs (README, CHANGELOG, docs, etc)
 
 ## Security
 
