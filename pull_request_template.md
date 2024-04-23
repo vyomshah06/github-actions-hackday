@@ -4,7 +4,7 @@ _Why are we making this change?_
 
 ## Quality
 
-_How will we know if this is working as expected when request is merged?_
+_How will we know if this change is working as expected when request is merged?_
 
 ## Communication
 
