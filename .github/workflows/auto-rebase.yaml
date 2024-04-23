@@ -18,14 +18,22 @@ jobs:
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
       
-      - name: Fetch pull request branches
-        run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*
+      - name: Fetch open PR branches
+        id: fetch_pr_branches
+        run: |
+          open_prs=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=open" | jq -r '.[] | .head.ref')
+          for pr_branch in $open_prs; do
+            git fetch origin "refs/pull/${pr_branch}/head:refs/remotes/origin/pr/${pr_branch}"
+          done
+          echo "{pr_branches}={$open_prs}" >> $GITHUB_OUTPUT
 
+
+   
       - name: Determine affected PRs
         id: determine_prs
         run: |
           git for-each-ref --format='%(refname:short)' refs/remotes/origin/pr/* | \
-            while read pr_branch; do \
+            for pr_branch in ${{ steps.fetch_pr_branches.outputs.pr_branches }}; do \
               echo "Checking PR branch: $pr_branch"; \
               if ! git merge-base --is-ancestor origin/main $pr_branch; then \
                 echo "PR branch $pr_branch is out-of-date with main"; \
