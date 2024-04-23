@@ -21,7 +21,7 @@ jobs:
       - name: Fetch pull request branches
         run: git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*
 
-       - name: Determine affected PRs
+      - name: Determine affected PRs
         id: determine_prs
         run: |
           git for-each-ref --format='%(refname:short) %(upstream:short)' refs/remotes/origin/pr/* | \
@@ -33,7 +33,7 @@ jobs:
               fi; \
             done
 
-     - name: Rebase affected PRs
+      - name: Rebase affected PRs
         if: steps.determine_prs.outputs.pr_branches != ''
         run: |
           for pr_branch in $(echo "${{ steps.determine_prs.outputs.pr_branches }}"); do \
