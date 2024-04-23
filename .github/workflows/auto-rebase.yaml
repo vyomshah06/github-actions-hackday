@@ -26,10 +26,10 @@ jobs:
         run: |
           git for-each-ref --format='pr_branch=%(refname:short) base_ref=%(upstream:short)' refs/remotes/origin/pr/* | \
             while read entry; do \
-              echo "Checking PR branch: $pr_branch and base ref: $base_ref"; \
+              echo `Checking PR branch: $pr_branch and base ref: $base_ref`; \
               if git merge-base --is-ancestor "$base_ref" "origin/main"; then \
-                echo "PR branch $pr_branch is out-of-date with main"; \
-                echo "::set-output name=pr_branches::$pr_branch"; \
+                echo `PR branch $pr_branch is out-of-date with main`; \
+                echo `::set-output name=pr_branches::$pr_branch`; \
               fi; \
             done
 
