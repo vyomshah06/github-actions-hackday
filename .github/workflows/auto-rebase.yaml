@@ -26,7 +26,7 @@ jobs:
             echo "Fetching PR branch: ${pr_branch}"
             git fetch origin "refs/pull/${pr_branch}/head:refs/remotes/origin/pr/${pr_branch}"
           done
-          echo "{pr_branches=$open_prs}" >> $GITHUB_OUTPUT
+          echo "pr_branches=$open_prs" >> $GITHUB_OUTPUT
 
 
    
