@@ -1,9 +1,8 @@
 name: Auto-Rebase Pull Request
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   auto-rebase:
@@ -17,21 +16,12 @@ jobs:
         run: |
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
-      
-      - name: Fetch open PR branches
-        id: fetch_pr_branches
-        run: |
-          open_prs=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls?state=open" | jq -r '.[] | .number')
-          for pr_branch in $open_prs; do
-            echo "Fetching PR branch: ${pr_branch}"
-            git fetch origin "refs/pull/${pr_branch}/head:refs/remotes/origin/pr/${pr_branch}"
-            if ! git merge-base --is-ancestor origin/main origin/pr/$pr_branch; then \
-              echo "PR branch $pr_branch is out-of-date with main"; \
-              echo "Rebasing $pr_branch onto main"; \
-              git checkout origin/pr/$pr_branch; \
-              git rebase origin/main; \
-              git push --force-with-lease; \
-            fi; \
-          done
 
-      
+      - name: Fetch upstream changes
+        run: git fetch origin
+
+      - name: Rebase PR branch
+        run: |
+          git checkout ${{ github.head_ref }}
+          git rebase origin/${{ github.base_ref }}
+          git push --force-with-lease
