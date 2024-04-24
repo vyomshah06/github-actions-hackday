@@ -2,6 +2,8 @@
 
 _Why are we making this change?_
 
+- Test auto-rebase workflow changes
+
 ## Quality
 
 _How will we know if this change is working as expected when pull request is merged?_
