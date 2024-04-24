@@ -33,7 +33,8 @@ jobs:
       - name: Determine affected PRs
         id: determine_prs
         run: |
-          for pr_branch in ${{ steps.fetch_pr_branches.outputs.pr_branches }}; do \
+          echo 
+          for pr_branch in ${ echo "${{ steps.fetch_pr_branches.outputs.pr_branches }}" }; do \
             echo "Checking PR branch: $pr_branch"; \
             if ! git merge-base --is-ancestor origin/main origin/pr/$pr_branch; then \
               echo "PR branch $pr_branch is out-of-date with main"; \
