@@ -25,17 +25,10 @@ jobs:
           for pr_branch in $open_prs; do
             echo "Fetching PR branch: ${pr_branch}"
             git fetch origin "refs/pull/${pr_branch}/head:refs/remotes/origin/pr/${pr_branch}"
-          done
-          echo "pr_branches=$open_prs" >> $GITHUB_OUTPUT
-
-      - name: Determine affected PRs
-        id: determine_prs
-        run: |
-          for pr_branch in ${ echo "${{ steps.fetch_pr_branches.outputs.pr_branches }}" }; do \
-            echo "Checking PR branch: $pr_branch"; \
             if ! git merge-base --is-ancestor origin/main origin/pr/$pr_branch; then \
               echo "PR branch $pr_branch is out-of-date with main"; \
               echo "Rebasing $pr_branch onto main"; \
             fi; \
           done
 
+      
