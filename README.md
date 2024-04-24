@@ -1,5 +1,5 @@
 # Introduction
-Hackday repository for testing github actions to resolve out-of-date issues.
+Hackday repository for testing github actions to rebase PR on new commits.
 
 # Actions
 
