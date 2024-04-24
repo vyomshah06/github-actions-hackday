@@ -38,9 +38,6 @@ jobs:
             if ! git merge-base --is-ancestor origin/main origin/pr/$pr_branch; then \
               echo "PR branch $pr_branch is out-of-date with main"; \
               echo "Rebasing $pr_branch onto main"; \
-              git checkout $pr_branch; \
-              git rebase origin/main; \
-              git push --force-with-lease; \
             fi; \
           done
 
